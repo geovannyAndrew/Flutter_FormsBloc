@@ -157,7 +157,8 @@ class LoginPage extends StatelessWidget {
               ),
               hintText: 'example@email.com',
               labelText: 'Email',
-              counterText: snapshot.data
+              counterText: snapshot.data,
+              errorText: snapshot.error
             ),
             onChanged: bloc.changeEmail,
           ),
@@ -181,6 +182,7 @@ class LoginPage extends StatelessWidget {
               ),
               labelText: 'Password',
               counterText: snapshot.data,
+              errorText: snapshot.error
             ),
             onChanged: bloc.changePassword,
           ),
