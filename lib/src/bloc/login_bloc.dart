@@ -21,6 +21,9 @@ class LoginBloc with Validators{
     Observable.combineLatest2(emailStream, passwordStream, (es, ps){
       return true;
     });
+  
+  String get email    => _emailStreamController.value;
+  String get password => _passwordStreamController.value;
 
   dispose(){
     _emailStreamController?.close();
