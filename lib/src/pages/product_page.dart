@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:forms_validation/src/models/product_model.dart';
+import 'package:forms_validation/src/utils/decimal_text_input_formatter.dart';
 import 'package:forms_validation/src/utils/utils.dart' as utils;
 
 class ProductPage extends StatefulWidget {
@@ -9,6 +12,7 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   final formKey = GlobalKey<FormState>();
+  var product = Product();
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +39,7 @@ class _ProductPageState extends State<ProductPage> {
               children: <Widget>[
                 _buildNameField(context),
                 _buildPriceField(context),
+                _buildAvailable(context),
                 SizedBox(
                   height: 16,
                 ),
@@ -49,10 +54,12 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _buildNameField(BuildContext context) {
     return TextFormField(
+      initialValue: product.title,
       textCapitalization: TextCapitalization.sentences,
       decoration: InputDecoration(
-        labelText: 'Product'
+        labelText: 'Product',
       ),
+      onSaved: (value) => product.title = value,
       validator: (value){
         if(value.length < 3){
           return 'Enter the product name';
@@ -64,10 +71,13 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _buildPriceField(BuildContext context) {
     return TextFormField(
+      initialValue: product.value.toString(),
       keyboardType: TextInputType.numberWithOptions(decimal: true),
+      inputFormatters: [  WhitelistingTextInputFormatter.digitsOnly ],
       decoration: InputDecoration(
         labelText: 'Price'
       ),
+      onSaved: (value) => product.value = double.parse(value),
       validator: (value){
         if(utils.isNumber(value)){
           return null;
@@ -95,5 +105,17 @@ class _ProductPageState extends State<ProductPage> {
   _submit(){
     if(!formKey.currentState.validate()) return;
     print('Todo Ok');
+    formKey.currentState.save();
+    print(product.title);
+    print(product.value);
+  }
+
+  Widget _buildAvailable(BuildContext context) {
+    return SwitchListTile(
+      value: product.available,
+      title: Text('Available'),
+      activeColor: Theme.of(context).primaryColor,
+      onChanged: (value)=> setState(()=> product.available = value),
+    );
   }
 }
