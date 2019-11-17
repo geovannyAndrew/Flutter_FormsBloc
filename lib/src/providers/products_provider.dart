@@ -14,5 +14,19 @@ class ProductsProvider{
     print(decodedData);
     return true;
   }
+
+  Future<List<Product>> getProducts() async{
+    final url = '$_url/products.json';
+    final response = await http.get(url);
+    final Map<String, dynamic> decodedData = json.decode(response.body);
+    if(decodedData == null) return [];
+    final products = List<Product>();
+    decodedData.forEach((id, productMap){
+      final productTemp = Product.fromJson(productMap);
+      productTemp.id = id;
+      products.add(productTemp);
+    });
+    return products;
+  }
   
 }

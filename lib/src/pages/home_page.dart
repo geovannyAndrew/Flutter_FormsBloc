@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:forms_validation/src/bloc/provider.dart';
+import 'package:forms_validation/src/models/product_model.dart';
+import 'package:forms_validation/src/providers/products_provider.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key key}) : super(key: key);
+
+  final productsProvider = ProductsProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -14,17 +17,7 @@ class HomePage extends StatelessWidget {
         title: Text('Home'),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Email: ${bloc.email}'),
-            Text('Password: ${bloc.password}'),
-          ],
-        ),
-      ),
+      body: _buildList(),
       floatingActionButton: _buildFloatingActionButton(context),
     );
   }
@@ -34,6 +27,22 @@ class HomePage extends StatelessWidget {
       child: Icon( Icons.add ),
       onPressed: ()=> Navigator.pushNamed(context, 'product'),
       backgroundColor: Theme.of(context).primaryColor,
+    );
+  }
+
+  Widget _buildList() {
+    return FutureBuilder(
+      future: productsProvider.getProducts(),
+      builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
+        if(snapshot.hasData){
+          return Container();
+        }
+        else{
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 }
