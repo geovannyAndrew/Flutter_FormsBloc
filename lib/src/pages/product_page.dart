@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:forms_validation/src/models/product_model.dart';
-import 'package:forms_validation/src/utils/decimal_text_input_formatter.dart';
+import 'package:forms_validation/src/providers/products_provider.dart';
 import 'package:forms_validation/src/utils/utils.dart' as utils;
 
-class ProductPage extends StatefulWidget {
+class ProductPage extends StatefulWidget {  
 
   @override
   _ProductPageState createState() => _ProductPageState();
@@ -13,6 +13,7 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   final formKey = GlobalKey<FormState>();
   var product = Product();
+  final productProvider = ProductsProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +109,8 @@ class _ProductPageState extends State<ProductPage> {
     formKey.currentState.save();
     print(product.title);
     print(product.value);
+
+    productProvider.createProdutc(product);
   }
 
   Widget _buildAvailable(BuildContext context) {

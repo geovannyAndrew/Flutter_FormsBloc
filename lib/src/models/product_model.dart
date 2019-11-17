@@ -34,4 +34,6 @@ class Product {
         "available": available,
         "fotoUrl":    fotoUrl,
     };
+
+    String toJsonString() => productToJson(this);
 }
