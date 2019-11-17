@@ -35,7 +35,14 @@ class HomePage extends StatelessWidget {
       future: productsProvider.getProducts(),
       builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
         if(snapshot.hasData){
-          return Container();
+          final products = snapshot.data;
+          return ListView.builder(
+            itemCount: products.length,
+            itemBuilder: (BuildContext context, int index){
+              final product = products[index];
+              return _buildItemProduct(context, product);
+            },
+          );
         }
         else{
           return Center(
@@ -43,6 +50,23 @@ class HomePage extends StatelessWidget {
           );
         }
       },
+    );
+  }
+
+  Widget _buildItemProduct(BuildContext context, Product product){
+    return Dismissible(
+      key: UniqueKey(),
+      background: Container(
+        color: Colors.grey[200],
+      ),
+      onDismissed: (direction){
+        //TODO Remove item
+      },
+      child: ListTile(
+        title: Text('${product.title} - ${product.value}'),
+        subtitle: Text(product.id),
+        onTap: () => Navigator.pushNamed(context, 'product'),
+      ),
     );
   }
 }
