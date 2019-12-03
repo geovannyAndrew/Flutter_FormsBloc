@@ -28,7 +28,7 @@ class Product {
     );
 
     Map<String, dynamic> toJson() => {
-        "id":         id,
+        //"id":         id, To not send id to serveron edit requests
         "title":      title,
         "value":      value,
         "available": available,
