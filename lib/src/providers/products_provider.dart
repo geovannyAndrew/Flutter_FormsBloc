@@ -28,5 +28,12 @@ class ProductsProvider{
     });
     return products;
   }
+
+  Future<int> deleteProduct(String id) async{
+    final url = '$_url/products/$id.json';
+    final response = await http.delete(url);
+    print(json.decode(response.body));
+    return 1;
+  }
   
 }
