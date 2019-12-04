@@ -12,7 +12,9 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   final formKey = GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   var product = Product();
+  bool _saving = false;
   final productProvider = ProductsProvider();
 
   @override
@@ -24,6 +26,7 @@ class _ProductPageState extends State<ProductPage> {
     }
 
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text('Product'),
         actions: <Widget>[
@@ -83,7 +86,7 @@ class _ProductPageState extends State<ProductPage> {
       inputFormatters: [  WhitelistingTextInputFormatter.digitsOnly ],
       decoration: InputDecoration(
         labelText: 'Price'
-      ),
+      ), 
       onSaved: (value) => product.value = double.parse(value),
       validator: (value){
         if(utils.isNumber(value)){
@@ -105,16 +108,16 @@ class _ProductPageState extends State<ProductPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0)
       ),
-      onPressed: _submit,
+      onPressed: _saving ? null : _submit,
     );
   }
 
   _submit(){
     if(!formKey.currentState.validate()) return;
-    print('Todo Ok');
     formKey.currentState.save();
-    print(product.title);
-    print(product.value);
+    setState(() {
+      _saving = true;
+    });
 
     if(product.id == null){
       productProvider.createProdutc(product);
@@ -122,6 +125,11 @@ class _ProductPageState extends State<ProductPage> {
     else{
       productProvider.editProdutc(product);
     }
+    setState(() {
+      _saving = false;
+    });
+    _showSnackBar('Product Saved!');
+    Navigator.pop(context);
   }
 
   Widget _buildAvailable(BuildContext context) {
@@ -131,5 +139,15 @@ class _ProductPageState extends State<ProductPage> {
       activeColor: Theme.of(context).primaryColor,
       onChanged: (value)=> setState(()=> product.available = value),
     );
+  }
+
+  _showSnackBar(String message){
+    final snackbar = SnackBar(
+      content: Text(message),
+      duration: Duration(
+        milliseconds: 1500
+      ),
+    );
+    scaffoldKey.currentState.showSnackBar(snackbar);
   }
 }
