@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:forms_validation/src/models/product_model.dart';
 import 'package:forms_validation/src/providers/products_provider.dart';
 import 'package:forms_validation/src/utils/utils.dart' as utils;
+import 'package:image_picker/image_picker.dart';
 
 class ProductPage extends StatefulWidget {  
 
@@ -15,6 +18,7 @@ class _ProductPageState extends State<ProductPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   var product = Product();
   bool _saving = false;
+  File _photo;
   final productProvider = ProductsProvider();
 
   @override
@@ -32,11 +36,11 @@ class _ProductPageState extends State<ProductPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.photo_size_select_actual),
-            onPressed: (){},
+            onPressed: _selectPicture,
           ),
           IconButton(
             icon: Icon(Icons.camera_alt),
-            onPressed: (){},
+            onPressed: _capturePhoto,
           )
         ],
       ),
@@ -47,6 +51,7 @@ class _ProductPageState extends State<ProductPage> {
             key: formKey,
             child: Column(
               children: <Widget>[
+                _showPhoto(),
                 _buildNameField(context),
                 _buildPriceField(context),
                 _buildAvailable(context),
@@ -149,5 +154,34 @@ class _ProductPageState extends State<ProductPage> {
       ),
     );
     scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+  Widget _showPhoto(){
+    if(product.fotoUrl != null){
+      return Container();
+    }
+    else{
+      return Image(
+        image: AssetImage(_photo?.path ?? 'assets/no-image.png'),
+        height: 300,
+        fit: BoxFit.cover,
+      );
+    }
+  }
+
+  _selectPicture() async{
+    _photo = await ImagePicker.pickImage(
+      source: ImageSource.gallery
+    );
+    if(_photo != null){
+
+    }
+
+    setState(() {
+      
+    });
+  }
+
+  _capturePhoto() {
   }
 }
