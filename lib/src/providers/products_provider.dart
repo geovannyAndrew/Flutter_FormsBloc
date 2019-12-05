@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:forms_validation/src/keys/keys.dart' as keys;
 import 'package:http/http.dart' as http;
 import 'package:forms_validation/src/models/product_model.dart';
+import 'package:mime_type/mime_type.dart';
+import 'package:http_parser/http_parser.dart';
 
 class ProductsProvider{
   final _url = keys.URL_REST_API;
@@ -42,6 +45,31 @@ class ProductsProvider{
     final response = await http.delete(url);
     print(json.decode(response.body));
     return 1;
+  }
+
+  Future<String> uploadImage(File imageFile) async{
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/geovannybuitrago/image/upload?upload_preset=js3ydjvt');
+    final mimeType = mime(imageFile.path).split('/'); // image/png
+    final imageUploadRequest = http.MultipartRequest(
+      'POST',
+      url
+    );
+    final file = await http.MultipartFile.fromPath(
+      'file',
+      imageFile.path,
+      contentType: MediaType(mimeType[0], mimeType[1])
+    );
+    imageUploadRequest.files.add(file);
+
+    final streamResponse = await imageUploadRequest.send();
+    final response = await http.Response.fromStream(streamResponse);
+    if( response.statusCode != 200 &&  response.statusCode != 201){
+      print('Something went wrong ');
+      print(response.body);
+      return null;
+    }
+    final responseData = json.decode(response.body);
+    return responseData['secure_url'];
   }
   
 }
