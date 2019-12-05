@@ -117,12 +117,16 @@ class _ProductPageState extends State<ProductPage> {
     );
   }
 
-  _submit(){
+  _submit() async{
     if(!formKey.currentState.validate()) return;
     formKey.currentState.save();
     setState(() {
       _saving = true;
     });
+
+    if(_photo != null){
+      product.fotoUrl = await productProvider.uploadImage(_photo);
+    }
 
     if(product.id == null){
       productProvider.createProdutc(product);
@@ -179,7 +183,7 @@ class _ProductPageState extends State<ProductPage> {
 
   _processImage(ImageSource source) async{
      _photo = await ImagePicker.pickImage(
-      source: ImageSource.camera
+      source: source
     );
     if(_photo != null){
 
