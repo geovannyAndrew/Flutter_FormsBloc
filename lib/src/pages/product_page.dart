@@ -162,11 +162,16 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _showPhoto(){
     if(product.fotoUrl != null){
-      return Container();
+      return FadeInImage(
+        image: NetworkImage(product.fotoUrl),
+        placeholder: AssetImage('assets/jar-loading.gif'),
+        height: 300,
+        fit: BoxFit.contain,
+      );
     }
     else{
       return Image(
-        image: AssetImage(_photo?.path ?? 'assets/no-image.png'),
+        image: _photo?.path != null ? FileImage(File(_photo?.path)): AssetImage('assets/no-image.png'),
         height: 300,
         fit: BoxFit.cover,
       );
@@ -186,7 +191,7 @@ class _ProductPageState extends State<ProductPage> {
       source: source
     );
     if(_photo != null){
-
+      product.fotoUrl = null;
     }
     setState(() {
       
