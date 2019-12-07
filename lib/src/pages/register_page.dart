@@ -3,8 +3,8 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:forms_validation/src/bloc/provider.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key key}) : super(key: key);
+class RegisterPage extends StatelessWidget {
+  const RegisterPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +120,7 @@ class LoginPage extends StatelessWidget {
             ),
             child: Column(
               children: <Widget>[
-                Text('Ingreso',
+                Text('Create account',
                   style: TextStyle(
                     fontSize: 20.0
                   ),
@@ -136,8 +136,8 @@ class LoginPage extends StatelessWidget {
           ),
 
           FlatButton(
-            child: Text('Create an account'),
-            onPressed: ()=> Navigator.pushReplacementNamed(context, 'register'),
+            child: Text('¿Ya tienes cuenta? Login'),
+            onPressed: ()=> Navigator.pushReplacementNamed(context, 'login'),
           ),
           SizedBox(
             height: 100,
