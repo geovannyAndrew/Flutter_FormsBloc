@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:forms_validation/src/bloc/provider.dart';
 import 'package:forms_validation/src/models/product_model.dart';
-import 'package:forms_validation/src/providers/products_provider.dart';
 
 class HomePage extends StatelessWidget {
 
-  final productsProvider = ProductsProvider();
-
   @override
   Widget build(BuildContext context) {
+
+    final productsBloc = Provider.productsBloc(context);
+    productsBloc.loadProducts();
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
         centerTitle: true,
       ),
-      body: _buildList(),
+      body: _buildList(productsBloc),
       floatingActionButton: _buildFloatingActionButton(context),
     );
   }
@@ -27,17 +28,18 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildList() {
-    return FutureBuilder(
-      future: productsProvider.getProducts(),
-      builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
+  Widget _buildList(ProductsBloc productsBloc) {
+
+    return StreamBuilder(
+      stream: productsBloc.productsStream,
+      builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot){
         if(snapshot.hasData){
           final products = snapshot.data;
           return ListView.builder(
             itemCount: products.length,
             itemBuilder: (BuildContext context, int index){
               final product = products[index];
-              return _buildItemProduct(context, product);
+              return _buildItemProduct(context,productsBloc, product);
             },
           );
         }
@@ -50,14 +52,14 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildItemProduct(BuildContext context, Product product){
+  Widget _buildItemProduct(BuildContext context, ProductsBloc productsBloc, Product product){
     return Dismissible(
       key: UniqueKey(),
       background: Container(
         color: Colors.grey[200],
       ),
       onDismissed: (direction){
-        productsProvider.deleteProduct(product.id);
+        productsBloc.deleteProduct(product.id);
       },
       child: Card(
         child: Column(

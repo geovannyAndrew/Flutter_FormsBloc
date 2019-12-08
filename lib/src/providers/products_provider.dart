@@ -33,6 +33,7 @@ class ProductsProvider{
     final response = await http.get(url);
     final Map<String, dynamic> decodedData = json.decode(response.body);
     if(decodedData == null) return [];
+    if(decodedData['error'] != null ) return [];
     final products = List<Product>();
     decodedData.forEach((id, productMap){
       final productTemp = Product.fromJson(productMap);
