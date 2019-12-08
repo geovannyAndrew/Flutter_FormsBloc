@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:forms_validation/src/bloc/provider.dart';
 import 'package:forms_validation/src/models/product_model.dart';
-import 'package:forms_validation/src/providers/products_provider.dart';
 import 'package:forms_validation/src/utils/utils.dart' as utils;
 import 'package:image_picker/image_picker.dart';
 
@@ -19,11 +19,11 @@ class _ProductPageState extends State<ProductPage> {
   var product = Product();
   bool _saving = false;
   File _photo;
-  final productProvider = ProductsProvider();
+  ProductsBloc productsBloc;
 
   @override
   Widget build(BuildContext context) {
-
+    productsBloc = Provider.productsBloc(context);
     final Product productData = ModalRoute.of(context).settings.arguments;
     if(productData != null){
       product = productData;
@@ -125,14 +125,14 @@ class _ProductPageState extends State<ProductPage> {
     });
 
     if(_photo != null){
-      product.fotoUrl = await productProvider.uploadImage(_photo);
+      product.fotoUrl = await productsBloc.uploadPhoto(_photo);
     }
 
     if(product.id == null){
-      productProvider.createProdutc(product);
+      productsBloc.addNewProduct(product);
     }
     else{
-      productProvider.editProdutc(product);
+      productsBloc.editProduct(product);
     }
     setState(() {
       _saving = false;
