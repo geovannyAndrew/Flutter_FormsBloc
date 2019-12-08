@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:forms_validation/src/keys/keys.dart' as keys;
+import 'package:forms_validation/src/user_preferences/user_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:forms_validation/src/models/product_model.dart';
 import 'package:mime_type/mime_type.dart';
@@ -9,9 +10,10 @@ import 'package:http_parser/http_parser.dart';
 
 class ProductsProvider{
   final _url = keys.URL_REST_API;
+  final _prefs = PreferenciasUsuario();
   
   Future<bool> createProdutc( Product product) async{
-    final url = '$_url/products.json';
+    final url = '$_url/products.json?auth=${_prefs.token}';
     final response = await http.post(url, body: product.toJsonString());
     final decodedData = json.decode(response.body);
     print(decodedData);
@@ -19,7 +21,7 @@ class ProductsProvider{
   }
 
   Future<bool> editProdutc( Product product) async{
-    final url = '$_url/products/${product.id}.json';
+    final url = '$_url/products/${product.id}.json?auth=${_prefs.token}';
     final response = await http.put(url, body: product.toJsonString());
     final decodedData = json.decode(response.body);
     print(decodedData);
@@ -27,7 +29,7 @@ class ProductsProvider{
   }
 
   Future<List<Product>> getProducts() async{
-    final url = '$_url/products.json';
+    final url = '$_url/products.json?auth=${_prefs.token}';
     final response = await http.get(url);
     final Map<String, dynamic> decodedData = json.decode(response.body);
     if(decodedData == null) return [];
@@ -41,7 +43,7 @@ class ProductsProvider{
   }
 
   Future<int> deleteProduct(String id) async{
-    final url = '$_url/products/$id.json';
+    final url = '$_url/products/$id.json?auth=${_prefs.token}';
     final response = await http.delete(url);
     print(json.decode(response.body));
     return 1;
