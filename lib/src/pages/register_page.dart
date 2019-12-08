@@ -2,9 +2,11 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:forms_validation/src/bloc/provider.dart';
+import 'package:forms_validation/src/providers/user_provider.dart';
 
 class RegisterPage extends StatelessWidget {
-  const RegisterPage({Key key}) : super(key: key);
+
+  final userProvider = UserProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -212,18 +214,14 @@ class RegisterPage extends StatelessWidget {
           elevation: 0.0,
           color: Colors.deepPurple,
           textColor: Colors.white,
-          onPressed: snapshot.hasData ? ()=> _login(context, bloc) : null,
+          onPressed: snapshot.hasData ? ()=> _register(context, bloc) : null,
         );
       },
     );
   }
 
-  _login(BuildContext context, LoginBloc bloc){
-    print('=============================');
-    print('Email: ${bloc.email}');
-    print('Password: ${bloc.password}');
-    print('=============================');
-
-    Navigator.pushNamed(context, 'home');
+  _register(BuildContext context, LoginBloc bloc){
+    userProvider.registerNewUser(bloc.email, bloc.password);
+    //Navigator.pushNamed(context, 'home');
   }
 }
